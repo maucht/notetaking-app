@@ -17,6 +17,9 @@ class Main extends React.Component{
     this.state={
       noteCount:0,
       noteWindow:0,
+      showFullNote:0,
+      renderedTitle:"",
+      renderedContent:"",
       notes:[{}]
   }
   this.newNoteSubmitted=this.newNoteSubmitted.bind(this)
@@ -56,34 +59,33 @@ class Main extends React.Component{
     }
     clickedOutFullNote(){
       console.log("CLICKED OUT")
-      const fullWindow=document.getElementById("clickedNoteContainer")
-      const fullNote=document.getElementById("clickedNote")
-      const mappedNotes=document.getElementById("noteContainer")
-      fullWindow.style.zIndex="-1"
-      fullWindow.style.opacity="0"
-      fullNote.style.zIndex="-1"
-      fullNote.style.opacity="0"
-      mappedNotes.style.opacity="100"
+      this.setState({
+        showFullNote:0
+      })
     }
-    noteClicked(title,contents){
+    noteClicked(title,content){
+      this.setState({
+        showFullNote:1,
+        renderedTitle:title,
+        renderedContent:content
+      })
+    }
+    renderFullNote(title="",contents=""){
       console.log("clicked note")
-     
-      const mappedNotes=document.getElementById("noteContainer")
-      
-      mappedNotes.style.opacity="0"
-      render(
-        <div id="clickedNoteContainer">
-          <div id="clickedNoteGrayOut" onClick={()=>this.clickedOutFullNote()}></div>
-          <div id="clickedNote">
-           <div id="clickedNoteTitle">{title}</div>
-           <div id="clickedNoteContents">{contents}</div>
+      switch(this.state.showFullNote){
+        case(0):
+          break;
+        case(1):
+          return(
+            <div id="clickedNoteContainer">
+              <div id="clickedNoteGrayOut" onClick={()=>this.clickedOutFullNote()}></div>
+              <div id="clickedNote">
+              <div id="clickedNoteTitle">{this.state.renderedTitle}</div>
+              <div id="clickedNoteContents">{this.state.renderedContent}</div>
+              </div>
           </div>
-      </div>
       )
-      const clickedNoteWindow=document.getElementById("clickedNoteContainer")
-      clickedNoteWindow.style.zIndex="10"
-      clickedNoteWindow.style.opacity="100"
-
+      }
     }
     header(){
       return(
@@ -145,6 +147,7 @@ class Main extends React.Component{
     render(){
       return(
         <>
+          <>{this.renderFullNote()}</>
           <>{this.header()}</>
           <>{this.mainWindow()}</>
           <>{this.sidebar()}</>
