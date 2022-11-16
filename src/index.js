@@ -7,6 +7,8 @@ import { render } from '@testing-library/react';
 import { keyboard } from '@testing-library/user-event/dist/keyboard';
 import { unmountComponentAtNode } from 'react-dom';
 
+// 'FULLNOTE' BRANCH. FIX OPACITY/Z INDEX ISSUES WHEN CLICKED OUT OF FULL NOTE
+
 // I will be using classes in this project, but I should use hooks and functional in the next.
 // Classes don't use props because you can just pass arguments through functions as normal.
 class Main extends React.Component{
