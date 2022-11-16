@@ -299,6 +299,7 @@ textarea{
 #clickedNoteTitle{
   font-size:7vh;
   padding:2vh;
+  text-align:center;
 }
 #clickedNoteContents{
   font-size:3vh;
