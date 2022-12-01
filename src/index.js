@@ -1,25 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { render } from '@testing-library/react';
-import { keyboard } from '@testing-library/user-event/dist/keyboard';
-import { unmountComponentAtNode } from 'react-dom';
-
-// 'FULLNOTE' BRANCH. FIX OPACITY/Z INDEX ISSUES WHEN CLICKED OUT OF FULL NOTE
 
 // I will be using classes in this project, but I should use hooks and functional in the next.
 // Classes don't use props because you can just pass arguments through functions as normal.
+// November 2021
+// Clean up the code and make the CSS nicer before putting it anywhere.
 class Main extends React.Component{
   constructor(props){
     super(props);
     this.state={
-      noteCount:0,
       noteWindow:0,
       showFullNote:0,
+      showMappedNotes:1,
+      showDeleteMenu:0,
       renderedTitle:"",
       renderedContent:"",
+      renderedTrashcan:"",
+      renderedId:"",
       notes:[{}]
   }
   this.newNoteSubmitted=this.newNoteSubmitted.bind(this)
@@ -46,7 +44,9 @@ class Main extends React.Component{
           ...this.state.notes,
           {
             title:titleWindow.value,
-            content:contentWindow.value
+            content:contentWindow.value,
+            index:this.state.notes.length,
+            trashCan:"trashIcon.png"
           }
         ]
 
@@ -58,20 +58,70 @@ class Main extends React.Component{
     )}
     }
     clickedOutFullNote(){
-      console.log("CLICKED OUT")
       this.setState({
-        showFullNote:0
+        showFullNote:0,
+        showMappedNotes:1,
+        showDeleteMenu:0
       })
     }
-    noteClicked(title,content){
+    noteClicked(note){
       this.setState({
         showFullNote:1,
-        renderedTitle:title,
-        renderedContent:content
+        showMappedNotes:0,
+        renderedTitle:note.title,
+        renderedContent:note.content,
+        renderedTrashcan:"trashIcon.png",
+        renderedId:note.id
       })
     }
-    renderFullNote(title="",contents=""){
-      console.log("clicked note")
+    noteDeleted(full=false,mapped=false){
+      var index= this.state.notes.findIndex(note => note.title===this.state.renderedTitle)
+      // Finds index of note being deleted
+      this.state.notes.splice(index,1) // Remove note from array
+      this.clickedOutFullNote()
+
+    }
+    trashClicked(event=null,note=null,clicked=false,full=false,mapped=false){
+      var mappedTrash=mapped
+      var fullTrash=full
+      if(clicked){
+        event.stopPropagation() // Stops note from displaying in full render
+
+        this.setState({
+          showDeleteMenu:1,
+          showFullNote:0,
+          showMappedNotes:1,
+        })
+
+        if(note!=null){
+          this.setState({
+            renderedId:note.id
+          })
+        }
+      }
+      switch(this.state.showDeleteMenu){
+        case(0):
+          break;
+        case(1):
+        return(
+          <div id="clickedNoteContainer">
+            <div id="clickedNoteGrayOut" onClick={()=>this.clickedOutFullNote()}></div>
+            <div id="deleteNotePrompt">Delete This Note?</div>
+            <div id="deleteNoteCancelButton" className="deleteNoteButtons" 
+              onClick={()=>this.clickedOutFullNote()}
+              >Cancel</div>
+            <div id="deleteNoteDeleteButton" className="deleteNoteButtons"
+            onClick={(full,mapped)=>this.noteDeleted(fullTrash,mappedTrash)}
+            >Delete</div>
+        </div>
+    )
+        break;
+
+      }
+      
+
+    }
+    renderFullNote(note,title="",contents=""){
       switch(this.state.showFullNote){
         case(0):
           break;
@@ -82,6 +132,7 @@ class Main extends React.Component{
               <div id="clickedNote">
               <div id="clickedNoteTitle">{this.state.renderedTitle}</div>
               <div id="clickedNoteContents">{this.state.renderedContent}</div>
+              <div onClick={(event,clicked,full)=>this.trashClicked(event,true,true)}><img id="clickedNoteTrashcan" src={this.state.renderedTrashcan}/></div>
               </div>
           </div>
       )
@@ -106,20 +157,28 @@ class Main extends React.Component{
       )
     }
     noteMapped(){
-      return(
-      <ul id="noteContainer">
-        {this.state.notes.map(note=>
-          <li key={note} 
-          onClick={()=>this.noteClicked(note.title,note.content)}
-          id={note.content!==undefined?"singleNote":"hideUndefinedNote"}
-          >
-            <img src={note.content!==undefined?"thingrayline.png":""} id="noteGrayDivider"/>
-            <div id="singleNoteTitle" >{note.title}</div>
-            <div id="singleNoteContent">{note.content}</div>
-          </li>
-    )}
-      </ul>
-      )
+      switch(this.state.showMappedNotes){
+        case(0):
+        break;
+        case(1):
+          if(this.state.noteCount>0){
+            return(
+            <ul id="noteContainer">
+              {this.state.notes.map(note=>
+                <li key={note.index} onClick={()=>this.noteClicked(note)}
+                id={note.content!==undefined?"singleNote":"hideUndefinedNote"}
+                >
+                  <img src={note.content!==undefined?"thingrayline.png":""} id="noteGrayDivider"/>
+                  <div id="singleNoteTitle" >{note.title}</div>
+                  <div id="singleNoteContent">{note.content}</div>
+                  <div id="singleNoteTrashcan" onClick={(event,note,clicked,mapped)=>this.trashClicked(event,note,true,true)}><img id="singleNoteTrashcan"src={note.trashCan}/></div>
+                </li>
+          )}
+            </ul>
+          )
+              }
+        break;
+        }
     }
     sidebar(){
       switch(this.state.noteWindow){
@@ -152,6 +211,7 @@ class Main extends React.Component{
           <>{this.mainWindow()}</>
           <>{this.sidebar()}</>
           <>{this.noteMapped()}</>
+          <>{this.trashClicked()}</>
           
         </>
       )

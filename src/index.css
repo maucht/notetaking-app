@@ -134,6 +134,7 @@ textarea{
 
   top:39.5vh;
 
+  font-size:1.75vh;
   text-align:center;
   line-height:4vh;
   border-radius:1vw;
@@ -228,7 +229,7 @@ textarea{
   position:absolute;
   display:-webkit-box;
   overflow:hidden;
-  -webkit-line-clamp:6;
+  -webkit-line-clamp:5;
   -webkit-box-orient:vertical;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -238,7 +239,7 @@ textarea{
 
   width:90%;
   left:0.3vw;
-  height:13.2vh;
+  height:11vh;
   top:7vh;
   padding-left:0.3vw;
   padding-right:0.3vw;
@@ -247,6 +248,22 @@ textarea{
   font-size:0.8em;
   color:white;
   user-select:none;
+}
+#singleNoteTrashcan{
+  position:absolute;
+  color:white;
+  top:9vh;
+  left:4.5vw;
+  user-select:none;
+  height:2.5vh;
+
+  transition:all 0.2s ease-in-out;
+  border-radius:6px;
+  z-index:10000000;
+}
+#singleNoteTrashcan:hover{
+  transition:all 0.4s ease-in-out;
+  background-color:red;
 }
 #noteGrayDivider{
   position:absolute;
@@ -300,8 +317,79 @@ textarea{
   font-size:7vh;
   padding:2vh;
   text-align:center;
+  background-color:black;
 }
 #clickedNoteContents{
+  position:absolute;
+  display:flex;
+  width:100%;
+  height:100%;
   font-size:3vh;
   padding:1vh;
+}
+#clickedNoteTrashcan{
+  position:absolute;
+  top:60vh;
+  left:52vw;
+  height: 5vh;
+  padding:1vh;
+  width:auto;
+  transition:all 0.2s ease-in-out;
+  z-index:10000000;
+  border-radius:6px;
+}
+#clickedNoteTrashcan:hover{
+  transition:all 0.2s ease-in-out;
+  background-color:red;
+}
+#deleteNotePrompt{
+  position:absolute;
+  top:35%;
+  left:40vw;
+  min-height:25vh;
+  min-width:30vw;
+  max-height:25vh;
+  max-width:30vw;
+
+  font-family:"raleway-light";
+  background-color:gray;
+  border-radius:12px;
+  color:white;
+  line-height:3vh;
+  text-align:center;
+  font-size:3vh;
+  user-select:none;
+  z-index:100000000;
+}
+.deleteNoteButtons{
+  position:absolute;
+  top:50%;
+  left:45vw;
+  min-height:5vh;
+  min-width:8vw;
+  border-radius:6px;
+
+  color:white;
+  box-shadow:0 0 30px rgba(255, 255, 255, 1);
+  font-family:"raleway-light";
+  text-align:center;
+  font-size:2vh;
+  line-height:5vh;
+
+  user-select:none;
+  transition:all 0.2s ease-in-out;
+  z-index:100000001;
+}
+#deleteNoteCancelButton{
+  background-color:black;
+}
+#deleteNoteDeleteButton{
+  left:58vw;
+  background-color:red;
+
+}
+.deleteNoteButtons:hover{
+  transition:all 0.2s ease-in-out;
+  transform:scale(1.2);
+
 }
